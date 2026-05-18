@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="240" viewBox="0 0 1200 240">
+  <defs>
+    <linearGradient id="sea" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#8ed8ff"/>
+      <stop offset="52%" stop-color="#35a8ef"/>
+      <stop offset="100%" stop-color="#0f67b7"/>
+    </linearGradient>
+    <linearGradient id="foam" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="240" fill="url(#sea)"/>
+  <path d="M0 58 C40 46 78 46 120 58 C162 70 198 71 240 58 C282 45 318 45 360 58 C402 71 438 71 480 58 C522 45 558 45 600 58 C642 71 678 71 720 58 C762 45 798 45 840 58 C882 71 918 71 960 58 C1002 45 1038 45 1080 58 C1122 71 1158 71 1200 58 L1200 0 L0 0 Z" fill="url(#foam)" opacity="0.75"/>
+  <path d="M0 90 C36 78 72 78 108 90 C144 102 180 102 216 90 C252 78 288 78 324 90 C360 102 396 102 432 90 C468 78 504 78 540 90 C576 102 612 102 648 90 C684 78 720 78 756 90 C792 102 828 102 864 90 C900 78 936 78 972 90 C1008 102 1044 102 1080 90 C1116 78 1152 78 1188 90" fill="none" stroke="#dff5ff" stroke-opacity="0.7" stroke-width="6" stroke-linecap="round"/>
+  <path d="M12 132 C42 122 76 122 106 132 C136 142 170 142 200 132 C230 122 264 122 294 132 C324 142 358 142 388 132 C418 122 452 122 482 132 C512 142 546 142 576 132 C606 122 640 122 670 132 C700 142 734 142 764 132 C794 122 828 122 858 132 C888 142 922 142 952 132 C982 122 1016 122 1046 132 C1076 142 1110 142 1140 132 C1170 122 1190 122 1218 132" fill="none" stroke="#c9efff" stroke-opacity="0.42" stroke-width="4" stroke-linecap="round"/>
+  <path d="M0 170 C40 160 80 160 120 170 C160 180 200 180 240 170 C280 160 320 160 360 170 C400 180 440 180 480 170 C520 160 560 160 600 170 C640 180 680 180 720 170 C760 160 800 160 840 170 C880 180 920 180 960 170 C1000 160 1040 160 1080 170 C1120 180 1160 180 1200 170" fill="none" stroke="#98ddff" stroke-opacity="0.28" stroke-width="3" stroke-linecap="round"/>
+</svg>
