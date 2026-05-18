@@ -1,186 +1,778 @@
 <!doctype html>
-<html lang="nl">
+<html lang="en">
 <head>
   <script defer src="https://cloud.umami.is/script.js" data-website-id="39a40810-ae41-42a4-bf28-0cd73275c460"></script>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Pressure & Density Altitude Visual Calculator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pressure &amp; Density Altitude Visualizer</title>
+  <meta name="description" content="Modern pressure altitude and density altitude visualizer with a clear schematic view of field elevation, pressure altitude and density altitude.">
   <style>
+    :root {
+      --bg: #eef6ff;
+      --bg-soft: #f8fbff;
+      --card: rgba(255, 255, 255, 0.92);
+      --card-border: rgba(146, 172, 209, 0.28);
+      --text: #122033;
+      --muted: #5f7087;
+      --heading: #123c72;
+      --accent: #3b82f6;
+      --accent-soft: #dbeafe;
+      --elev: #0f766e;
+      --pa: #f59e0b;
+      --da: #ef4444;
+      --shadow: 0 24px 70px rgba(86, 117, 161, 0.14);
+      --radius-xl: 28px;
+      --radius-lg: 20px;
+      --radius-md: 14px;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
     body {
-      font-family: 'Inter', sans-serif;
-      background: linear-gradient(135deg, #e0f2ff, #f7fff7);
-      color: #222;
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(147, 197, 253, 0.42), transparent 32%),
+        radial-gradient(circle at top right, rgba(191, 219, 254, 0.38), transparent 28%),
+        linear-gradient(180deg, #f7fbff 0%, #eef6ff 44%, #f8fbff 100%);
+    }
+
+    .page {
+      width: min(1120px, calc(100% - 28px));
+      margin: 0 auto;
+      padding: clamp(18px, 3vw, 34px) 0;
+    }
+
+    .shell {
+      border: 1px solid rgba(255,255,255,0.72);
+      border-radius: 34px;
+      background: rgba(255, 255, 255, 0.74);
+      backdrop-filter: blur(18px);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .hero {
+      padding: clamp(24px, 4vw, 38px);
+      border-bottom: 1px solid rgba(146, 172, 209, 0.18);
+      background: linear-gradient(180deg, rgba(255,255,255,0.72), rgba(247,251,255,0.76));
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      font-weight: 800;
+      color: var(--heading);
+      background: rgba(219, 234, 254, 0.8);
+      border: 1px solid rgba(147, 197, 253, 0.42);
+    }
+
+    h1 {
+      margin: 16px 0 12px;
+      font-size: clamp(1.95rem, 3vw, 2.85rem);
+      line-height: 1.08;
+      letter-spacing: -0.035em;
+      color: var(--heading);
+    }
+
+    .subtitle {
+      max-width: 760px;
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.72;
+      font-size: 1.02rem;
+    }
+
+    .content {
+      padding: clamp(18px, 3vw, 28px);
+      display: grid;
+      grid-template-columns: minmax(280px, 360px) minmax(0, 1fr);
+      gap: 22px;
+    }
+
+    .card {
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-lg);
+      background: var(--card);
+      box-shadow: 0 14px 34px rgba(98, 125, 166, 0.10);
+    }
+
+    .controls {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .section-title {
       display: flex;
       align-items: center;
-      justify-content: center;
-      height: 100vh;
+      justify-content: space-between;
+      gap: 12px;
       margin: 0;
+      font-size: 1.08rem;
+      color: #153866;
     }
-    .container {
-      background: white;
-      border-radius: 16px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-      padding: 24px;
-      max-width: 900px;
-      width: 100%;
+
+    .section-kicker {
+      margin: 0 0 6px;
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #6b8cb6;
+    }
+
+    .input-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .field {
       display: flex;
       flex-direction: column;
-      gap: 20px;
+      gap: 8px;
     }
-    h1 {
-      font-size: 1.5rem;
-      margin-bottom: 10px;
-      text-align: center;
-      color: #00695c;
+
+    .field.full {
+      grid-column: 1 / -1;
     }
-    .inputs {
+
+    label {
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: #26415f;
+    }
+
+    .hint {
+      font-size: 0.78rem;
+      color: #7a8ca6;
+      margin-top: -2px;
+    }
+
+    input,
+    select {
+      width: 100%;
+      border: 1px solid rgba(126, 161, 209, 0.35);
+      border-radius: 12px;
+      padding: 12px 14px;
+      font-size: 1rem;
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.88);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.6);
+      transition: border-color .2s ease, box-shadow .2s ease, transform .2s ease;
+    }
+
+    input:focus,
+    select:focus {
+      outline: none;
+      border-color: rgba(59, 130, 246, 0.58);
+      box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.12);
+    }
+
+    .summary {
+      display: grid;
+      gap: 12px;
+    }
+
+    .summary-card {
+      padding: 14px 16px;
+      border-radius: 16px;
+      border: 1px solid rgba(146, 172, 209, 0.18);
+      background: linear-gradient(180deg, rgba(255,255,255,0.95), rgba(246,249,255,0.94));
+    }
+
+    .summary-card strong,
+    .summary-card span.value {
+      display: block;
+    }
+
+    .summary-label {
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #6b7d96;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+
+    .value {
+      font-size: 1.38rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+    }
+
+    .subvalue {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .elev-card .value { color: var(--elev); }
+    .pa-card .value { color: #b86c00; }
+    .da-card .value { color: #c62828; }
+
+    .formula-box {
+      padding: 16px 18px;
+      border-radius: 16px;
+      border: 1px dashed rgba(126, 161, 209, 0.45);
+      background: linear-gradient(180deg, rgba(238, 246, 255, 0.88), rgba(255, 255, 255, 0.88));
+    }
+
+    .formula-box p {
+      margin: 0;
+      color: #42607f;
+      line-height: 1.7;
+      font-size: 0.92rem;
+    }
+
+    .formula-box code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.88rem;
+      color: #0f3d76;
+      font-weight: 700;
+    }
+
+    .visual-panel {
+      display: grid;
+      gap: 16px;
+    }
+
+    .chart-card {
+      padding: 18px;
+    }
+
+    .chart-header {
       display: flex;
       flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: flex-start;
       gap: 16px;
-      justify-content: center;
+      margin-bottom: 14px;
     }
-    .input-group {
+
+    .chart-copy {
+      max-width: 520px;
+    }
+
+    .chart-copy p {
+      margin: 8px 0 0;
+      color: var(--muted);
+      line-height: 1.65;
+      font-size: 0.95rem;
+    }
+
+    .legend {
       display: flex;
-      flex-direction: column;
-      gap: 6px;
+      flex-wrap: wrap;
+      gap: 10px;
     }
-    label {
-      font-size: 0.9rem;
-      color: #333;
+
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(146, 172, 209, 0.22);
+      background: rgba(255, 255, 255, 0.76);
+      color: #26415f;
+      font-size: 0.86rem;
+      font-weight: 700;
     }
-    input, select {
-      padding: 8px 10px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      font-size: 1rem;
-      transition: border-color 0.2s ease;
+
+    .legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      display: inline-block;
     }
-    input:focus, select:focus {
-      border-color: #00a67e;
-      outline: none;
+
+    .canvas-wrap {
+      border-radius: 20px;
+      overflow: hidden;
+      border: 1px solid rgba(146, 172, 209, 0.18);
+      background: linear-gradient(180deg, #eef7ff 0%, #e4f1ff 52%, #f8fbff 100%);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.65);
     }
-    .results {
-      text-align: center;
-    }
-    .result-value {
-      font-size: 1.4rem;
-      font-weight: bold;
-      color: #00796b;
-    }
-    .note {
-      font-size: 0.85rem;
-      color: #666;
-    }
+
     canvas {
       width: 100%;
-      height: 240px;
-      background: linear-gradient(180deg, #b2dfdb, #e0f7fa);
-      border-radius: 10px;
+      height: 460px;
+      display: block;
+    }
+
+    .details-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .detail-card {
+      padding: 16px;
+      border-radius: 16px;
+      border: 1px solid rgba(146, 172, 209, 0.18);
+      background: linear-gradient(180deg, rgba(255,255,255,0.94), rgba(246,249,255,0.94));
+    }
+
+    .detail-card h3 {
+      margin: 0 0 8px;
+      font-size: 0.95rem;
+      color: #20436a;
+    }
+
+    .detail-card p,
+    .detail-card ul {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.68;
+      font-size: 0.9rem;
+    }
+
+    .detail-card ul {
+      padding-left: 18px;
+    }
+
+    .footer-note {
+      padding: 0 18px 18px;
+      color: #789;
+      font-size: 0.82rem;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 980px) {
+      .content {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .page {
+        width: min(100% - 16px, 1120px);
+      }
+
+      .hero,
+      .content {
+        padding-left: 16px;
+        padding-right: 16px;
+      }
+
+      .input-grid,
+      .details-grid {
+        grid-template-columns: 1fr;
+      }
+
+      canvas {
+        height: 400px;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Pressure & Density Altitude Visual Calculator</h1>
-    <div class="inputs">
-      <div class="input-group">
-        <label for="elev">Elevation</label>
-        <input id="elev" type="number" value="150" step="1" min="-500">
-      </div>
-      <div class="input-group">
-        <label for="unit">Eenheid</label>
-        <select id="unit">
-          <option value="ft">Feet</option>
-          <option value="m">Meter</option>
-        </select>
-      </div>
-      <div class="input-group">
-        <label for="qnh">QNH (hPa)</label>
-        <input id="qnh" type="number" value="1005" step="0.1" min="800" max="1100">
-      </div>
-      <div class="input-group">
-        <label for="temp">Temperatuur (°C)</label>
-        <input id="temp" type="number" value="15" step="0.1" min="-50" max="50">
-      </div>
-    </div>
+  <main class="page">
+    <section class="shell">
+      <header class="hero">
+        <span class="eyebrow">Atmospheric performance planning</span>
+        <h1>Pressure &amp; Density Altitude Visualizer</h1>
+        <p class="subtitle">
+          Compare field elevation, pressure altitude, and density altitude in one modern visual layout.
+          Adjust airport elevation, QNH, and outside air temperature to see how atmospheric conditions influence the effective altitude your aircraft performs in.
+        </p>
+      </header>
 
-    <canvas id="visual"></canvas>
+      <section class="content">
+        <aside class="card controls">
+          <div>
+            <p class="section-kicker">Inputs</p>
+            <h2 class="section-title">Flight condition settings</h2>
+          </div>
 
-    <div class="results">
-      <div>QNH verschil: <span id="delta"></span> hPa</div>
-      <div class="result-value">Pressure Altitude: <span id="pa"></span></div>
-      <div class="result-value" style="color:#d84315;">Density Altitude: <span id="da"></span></div>
-      <div class="note">PA = Elevation + (1013 − QNH) × 27 ft/hPa<br>DA = PA + (120 × (OAT − ISA Temp))</div>
-    </div>
-  </div>
+          <div class="input-grid">
+            <div class="field">
+              <label for="elev">Field elevation</label>
+              <input id="elev" type="number" value="150" step="1" min="-1000" max="18000">
+            </div>
+            <div class="field">
+              <label for="unit">Elevation unit</label>
+              <select id="unit">
+                <option value="ft">Feet (ft)</option>
+                <option value="m">Meters (m)</option>
+              </select>
+            </div>
+            <div class="field full">
+              <label for="qnh">Altimeter setting / QNH (hPa)</label>
+              <input id="qnh" type="number" value="1005" step="0.1" min="870" max="1085">
+              <div class="hint">Standard pressure used by the calculator: 1013.25 hPa</div>
+            </div>
+            <div class="field full">
+              <label for="temp">Outside air temperature / OAT (°C)</label>
+              <input id="temp" type="number" value="15" step="0.1" min="-60" max="60">
+            </div>
+          </div>
+
+          <div>
+            <p class="section-kicker">Calculated results</p>
+            <div class="summary">
+              <div class="summary-card elev-card">
+                <div class="summary-label">Field elevation</div>
+                <span class="value" id="elevDisplay">150 ft</span>
+                <div class="subvalue" id="elevMetric">46 m</div>
+              </div>
+              <div class="summary-card">
+                <div class="summary-label">Pressure difference from standard</div>
+                <span class="value" id="delta">+0.0 hPa</span>
+                <div class="subvalue" id="deltaMeaning">Positive values raise pressure altitude</div>
+              </div>
+              <div class="summary-card pa-card">
+                <div class="summary-label">Pressure altitude</div>
+                <span class="value" id="pa">0 ft</span>
+                <div class="subvalue" id="paExtra">ISA temperature: 0 °C</div>
+              </div>
+              <div class="summary-card da-card">
+                <div class="summary-label">Density altitude</div>
+                <span class="value" id="da">0 ft</span>
+                <div class="subvalue" id="daExtra">Performance-relevant altitude</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="formula-box">
+            <p>
+              <strong>Reference formulas</strong><br>
+              <code>Pressure Altitude = Elevation + (1013.25 − QNH) × 27 ft/hPa</code><br>
+              <code>ISA Temp = 15 − 2 °C per 1,000 ft (based on pressure altitude)</code><br>
+              <code>Density Altitude = Pressure Altitude + 120 × (OAT − ISA Temp)</code>
+            </p>
+          </div>
+        </aside>
+
+        <section class="visual-panel">
+          <div class="card chart-card">
+            <div class="chart-header">
+              <div class="chart-copy">
+                <p class="section-kicker">Visualizer</p>
+                <h2 class="section-title">Reference planes and field elevation</h2>
+                <p>
+                  The chart keeps the three reference planes visible: field elevation, pressure altitude, and density altitude.
+                  The shaded ground area and runway line make airport elevation easier to read at a glance.
+                </p>
+              </div>
+              <div class="legend" aria-label="Chart legend">
+                <span class="legend-item"><span class="legend-dot" style="background: var(--elev);"></span>Field elevation</span>
+                <span class="legend-item"><span class="legend-dot" style="background: var(--pa);"></span>Pressure altitude</span>
+                <span class="legend-item"><span class="legend-dot" style="background: var(--da);"></span>Density altitude</span>
+              </div>
+            </div>
+            <div class="canvas-wrap">
+              <canvas id="visual"></canvas>
+            </div>
+          </div>
+
+          <div class="details-grid">
+            <article class="detail-card">
+              <h3>How to read the chart</h3>
+              <p>
+                The left scale is altitude in feet. Each horizontal reference plane shows where the airport sits, where the pressure altitude lies,
+                and where the aircraft effectively performs based on the current temperature.
+              </p>
+            </article>
+            <article class="detail-card">
+              <h3>Pressure altitude</h3>
+              <p>
+                Pressure altitude is the altitude indicated when the altimeter is set to standard pressure.
+                Lower QNH produces a higher pressure altitude; higher QNH produces a lower pressure altitude.
+              </p>
+            </article>
+            <article class="detail-card">
+              <h3>Density altitude</h3>
+              <p>
+                Density altitude increases when the air is warm, thin, or both.
+                A higher density altitude generally means reduced aircraft performance during takeoff, climb, and landing.
+              </p>
+            </article>
+          </div>
+        </section>
+      </section>
+
+      <div class="footer-note">
+        This visualization is intended for planning and education. Always verify performance calculations with the approved aircraft documentation,
+        airport data, and operational procedures.
+      </div>
+    </section>
+  </main>
 
   <script>
     const elev = document.getElementById('elev');
     const unit = document.getElementById('unit');
     const qnh = document.getElementById('qnh');
     const temp = document.getElementById('temp');
+
+    const elevDisplay = document.getElementById('elevDisplay');
+    const elevMetric = document.getElementById('elevMetric');
     const deltaOut = document.getElementById('delta');
+    const deltaMeaning = document.getElementById('deltaMeaning');
     const paOut = document.getElementById('pa');
+    const paExtra = document.getElementById('paExtra');
     const daOut = document.getElementById('da');
+    const daExtra = document.getElementById('daExtra');
+
     const canvas = document.getElementById('visual');
     const ctx = canvas.getContext('2d');
 
-    function mToFt(m) { return m * 3.28084; }
-    function ftToM(ft) { return ft / 3.28084; }
+    const STANDARD_PRESSURE = 1013.25;
+    const FT_PER_HPA = 27;
+    const DENSITY_FACTOR = 120;
 
-    function drawVisual(elevFt, paFt, daFt) {
-      const width = canvas.width = canvas.clientWidth;
-      const height = canvas.height = canvas.clientHeight;
+    function mToFt(value) { return value * 3.28084; }
+    function ftToM(value) { return value / 3.28084; }
+
+    function formatNumber(value) {
+      return Math.round(value).toLocaleString('en-US');
+    }
+
+    function formatAltitude(ft) {
+      return `${formatNumber(ft)} ft`;
+    }
+
+    function formatAltitudeWithMetric(ft) {
+      return `${formatNumber(ft)} ft (${formatNumber(ftToM(ft))} m)`;
+    }
+
+    function niceStep(range) {
+      const rough = range / 6;
+      const power = Math.pow(10, Math.floor(Math.log10(Math.max(rough, 1))));
+      const normalized = rough / power;
+      if (normalized <= 1) return 1 * power;
+      if (normalized <= 2) return 2 * power;
+      if (normalized <= 5) return 5 * power;
+      return 10 * power;
+    }
+
+    function drawRoundedLabel(x, y, text, color) {
+      ctx.font = '600 13px Inter, system-ui, sans-serif';
+      const paddingX = 10;
+      const paddingY = 7;
+      const width = ctx.measureText(text).width + paddingX * 2;
+      const height = 30;
+      const radius = 10;
+
+      ctx.save();
+      ctx.beginPath();
+      ctx.moveTo(x + radius, y);
+      ctx.lineTo(x + width - radius, y);
+      ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+      ctx.lineTo(x + width, y + height - radius);
+      ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+      ctx.lineTo(x + radius, y + height);
+      ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+      ctx.lineTo(x, y + radius);
+      ctx.quadraticCurveTo(x, y, x + radius, y);
+      ctx.closePath();
+      ctx.fillStyle = 'rgba(255,255,255,0.94)';
+      ctx.fill();
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+      ctx.fillStyle = '#17304f';
+      ctx.fillText(text, x + paddingX, y + 19);
+      ctx.restore();
+
+      return { width, height };
+    }
+
+    function drawVisualizer(elevFt, paFt, daFt) {
+      const dpr = Math.max(window.devicePixelRatio || 1, 1);
+      const width = canvas.clientWidth;
+      const height = canvas.clientHeight;
+      canvas.width = Math.round(width * dpr);
+      canvas.height = Math.round(height * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       ctx.clearRect(0, 0, width, height);
 
-      const maxAlt = Math.max(daFt * 1.1, 2000); // schaal past zich automatisch aan
-      const scale = height / maxAlt;
+      const plotLeft = 72;
+      const plotRight = width - 200;
+      const plotTop = 26;
+      const plotBottom = height - 26;
+      const plotWidth = plotRight - plotLeft;
+      const plotHeight = plotBottom - plotTop;
 
-      const elevY = height - elevFt * scale;
-      const paY = height - paFt * scale;
-      const daY = height - daFt * scale;
+      const values = [0, elevFt, paFt, daFt];
+      let minAlt = Math.min(...values);
+      let maxAlt = Math.max(...values);
+      const padding = Math.max(450, (maxAlt - minAlt) * 0.18 || 450);
+      minAlt = Math.min(0, minAlt - padding * 0.45);
+      maxAlt = maxAlt + padding;
+      if (maxAlt - minAlt < 1200) {
+        maxAlt += 600;
+        minAlt -= 300;
+      }
 
-      // grond
-      ctx.fillStyle = '#004d40';
-      ctx.fillRect(0, height - 10, width, 10);
+      const altitudeToY = (alt) => plotBottom - ((alt - minAlt) / (maxAlt - minAlt)) * plotHeight;
 
-      // elevation
-      ctx.fillStyle = '#0288d1';
-      ctx.fillRect(width/4, elevY - 3, width/2, 6);
-      ctx.fillText(`Elevation: ${Math.round(elevFt)} ft`, 10, elevY - 8);
+      const skyGradient = ctx.createLinearGradient(0, plotTop, 0, plotBottom);
+      skyGradient.addColorStop(0, '#f7fbff');
+      skyGradient.addColorStop(0.6, '#e7f2ff');
+      skyGradient.addColorStop(1, '#f8fbff');
+      ctx.fillStyle = skyGradient;
+      ctx.fillRect(0, 0, width, height);
 
-      // pressure altitude
-      ctx.fillStyle = '#ef6c00';
-      ctx.fillRect(width/4 - 10, paY - 2, width/2 + 20, 4);
-      ctx.fillText(`PA: ${Math.round(paFt)} ft`, 10, paY - 10);
+      const step = niceStep(maxAlt - minAlt);
+      const firstTick = Math.ceil(minAlt / step) * step;
+      ctx.font = '12px Inter, system-ui, sans-serif';
+      ctx.fillStyle = '#6f8096';
+      ctx.strokeStyle = 'rgba(129, 153, 186, 0.22)';
+      ctx.lineWidth = 1;
 
-      // density altitude
-      ctx.fillStyle = '#c62828';
-      ctx.fillRect(width/4 - 20, daY - 2, width/2 + 40, 3);
-      ctx.fillText(`DA: ${Math.round(daFt)} ft`, 10, daY - 12);
+      for (let alt = firstTick; alt <= maxAlt; alt += step) {
+        const y = altitudeToY(alt);
+        ctx.beginPath();
+        ctx.moveTo(plotLeft, y);
+        ctx.lineTo(plotRight, y);
+        ctx.stroke();
+
+        ctx.fillText(`${formatNumber(alt)} ft`, 10, y + 4);
+      }
+
+      const fieldY = altitudeToY(elevFt);
+      const seaLevelY = altitudeToY(0);
+      const pressureY = altitudeToY(paFt);
+      const densityY = altitudeToY(daFt);
+
+      const groundGradient = ctx.createLinearGradient(0, fieldY, 0, plotBottom);
+      groundGradient.addColorStop(0, '#cfe1b2');
+      groundGradient.addColorStop(0.42, '#c2b18f');
+      groundGradient.addColorStop(1, '#9a8560');
+      ctx.fillStyle = groundGradient;
+      ctx.fillRect(plotLeft, fieldY, plotWidth, plotBottom - fieldY);
+
+      ctx.fillStyle = 'rgba(255,255,255,0.10)';
+      for (let i = 0; i < 10; i++) {
+        const stripeY = fieldY + ((plotBottom - fieldY) / 10) * i;
+        ctx.fillRect(plotLeft, stripeY, plotWidth, 1);
+      }
+
+      const runwayX = plotLeft + plotWidth * 0.3;
+      const runwayWidth = Math.min(190, plotWidth * 0.36);
+      const runwayHeight = 16;
+      ctx.fillStyle = '#6b7280';
+      ctx.fillRect(runwayX, fieldY - runwayHeight / 2, runwayWidth, runwayHeight);
+      ctx.strokeStyle = 'rgba(255,255,255,0.35)';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(runwayX + 16, fieldY);
+      ctx.lineTo(runwayX + runwayWidth - 16, fieldY);
+      ctx.stroke();
+
+      const referenceLines = [
+        { y: seaLevelY, color: '#60a5fa', dash: [5, 6], label: 'Sea level (0 ft)' },
+        { y: fieldY, color: getComputedStyle(document.documentElement).getPropertyValue('--elev').trim(), dash: [], label: `Field elevation • ${formatAltitudeWithMetric(elevFt)}` },
+        { y: pressureY, color: getComputedStyle(document.documentElement).getPropertyValue('--pa').trim(), dash: [10, 8], label: `Pressure altitude • ${formatAltitudeWithMetric(paFt)}` },
+        { y: densityY, color: getComputedStyle(document.documentElement).getPropertyValue('--da').trim(), dash: [14, 8], label: `Density altitude • ${formatAltitudeWithMetric(daFt)}` }
+      ];
+
+      referenceLines.forEach((line) => {
+        ctx.save();
+        ctx.setLineDash(line.dash);
+        ctx.strokeStyle = line.color;
+        ctx.lineWidth = line.label.startsWith('Sea level') ? 1.5 : 2.5;
+        ctx.beginPath();
+        ctx.moveTo(plotLeft, line.y);
+        ctx.lineTo(plotRight, line.y);
+        ctx.stroke();
+        ctx.restore();
+      });
+
+      ctx.strokeStyle = 'rgba(126, 161, 209, 0.45)';
+      ctx.lineWidth = 1;
+      ctx.strokeRect(plotLeft, plotTop, plotWidth, plotHeight);
+
+      const labelItems = referenceLines.map((item) => ({ ...item, labelY: item.y }));
+      labelItems.sort((a, b) => a.y - b.y);
+      const gap = 34;
+      for (let i = 1; i < labelItems.length; i++) {
+        if (labelItems[i].labelY - labelItems[i - 1].labelY < gap) {
+          labelItems[i].labelY = labelItems[i - 1].labelY + gap;
+        }
+      }
+      const overflow = labelItems[labelItems.length - 1].labelY - (plotBottom - 30);
+      if (overflow > 0) {
+        for (let i = labelItems.length - 1; i >= 0; i--) {
+          labelItems[i].labelY -= overflow;
+          if (i > 0 && labelItems[i].labelY - labelItems[i - 1].labelY < gap) {
+            labelItems[i - 1].labelY = labelItems[i].labelY - gap;
+          }
+        }
+      }
+      const topUnderflow = plotTop + 6 - labelItems[0].labelY;
+      if (topUnderflow > 0) {
+        labelItems.forEach((item) => item.labelY += topUnderflow);
+      }
+
+      const labelX = plotRight + 16;
+      labelItems.forEach((item) => {
+        ctx.save();
+        ctx.strokeStyle = item.color;
+        ctx.lineWidth = 1.5;
+        ctx.setLineDash([4, 4]);
+        ctx.beginPath();
+        ctx.moveTo(plotRight, item.y);
+        ctx.lineTo(labelX - 10, item.labelY + 15);
+        ctx.stroke();
+        ctx.restore();
+        drawRoundedLabel(labelX, item.labelY, item.label, item.color);
+      });
+
+      ctx.save();
+      ctx.fillStyle = '#23425f';
+      ctx.font = '700 12px Inter, system-ui, sans-serif';
+      ctx.fillText('Altitude scale', plotLeft - 4, plotTop - 8);
+      ctx.restore();
     }
 
     function calculate() {
-      let elevation = parseFloat(elev.value) || 0;
-      const qnhVal = parseFloat(qnh.value) || 1013;
-      const oat = parseFloat(temp.value) || 15;
-      const delta = 1013 - qnhVal;
-      let elevFt = unit.value === 'm' ? mToFt(elevation) : elevation;
-      const paFt = elevFt + delta * 27;
+      const elevation = parseFloat(elev.value) || 0;
+      const qnhValue = parseFloat(qnh.value) || STANDARD_PRESSURE;
+      const oat = parseFloat(temp.value) || 0;
+      const elevFt = unit.value === 'm' ? mToFt(elevation) : elevation;
 
-      // ISA temp op hoogte (afname 2°C per 1000 ft)
-      const isaTemp = 15 - (paFt / 1000 * 2);
-      const daFt = paFt + 120 * (oat - isaTemp);
+      const pressureDifference = STANDARD_PRESSURE - qnhValue;
+      const paFt = elevFt + pressureDifference * FT_PER_HPA;
+      const isaTemp = 15 - ((paFt / 1000) * 2);
+      const daFt = paFt + DENSITY_FACTOR * (oat - isaTemp);
 
-      deltaOut.textContent = delta.toFixed(1);
-      paOut.textContent = `${Math.round(paFt)} ft (${Math.round(ftToM(paFt))} m)`;
-      daOut.textContent = `${Math.round(daFt)} ft (${Math.round(ftToM(daFt))} m)`;
+      elevDisplay.textContent = formatAltitude(elevFt);
+      elevMetric.textContent = `${formatNumber(ftToM(elevFt))} m`;
 
-      drawVisual(elevFt, paFt, daFt);
+      deltaOut.textContent = `${pressureDifference >= 0 ? '+' : ''}${pressureDifference.toFixed(2)} hPa`;
+      deltaMeaning.textContent = pressureDifference >= 0
+        ? 'Standard pressure is higher than QNH, increasing pressure altitude'
+        : 'QNH is above standard pressure, lowering pressure altitude';
+
+      paOut.textContent = formatAltitudeWithMetric(paFt);
+      paExtra.textContent = `ISA temperature at pressure altitude: ${isaTemp.toFixed(1)} °C`;
+
+      daOut.textContent = formatAltitudeWithMetric(daFt);
+      const densityDelta = daFt - paFt;
+      daExtra.textContent = `${densityDelta >= 0 ? '+' : ''}${formatNumber(densityDelta)} ft relative to pressure altitude`;
+
+      drawVisualizer(elevFt, paFt, daFt);
     }
 
-    [elev, unit, qnh, temp].forEach(el => el.addEventListener('input', calculate));
+    [elev, unit, qnh, temp].forEach((element) => {
+      element.addEventListener('input', calculate);
+      element.addEventListener('change', calculate);
+    });
 
+    window.addEventListener('resize', calculate);
     calculate();
   </script>
 </body>
