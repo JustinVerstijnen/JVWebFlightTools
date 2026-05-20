@@ -6,419 +6,943 @@
   <script defer src="https://cloud.umami.is/script.js" data-website-id="39a40810-ae41-42a4-bf28-0cd73275c460"></script>
   <title>Unit Calculator - justinverstijnen.nl</title>
   <style>
-    :root{
-      --bg:#0f172a; --card:#111827; --muted:#334155; --text:#e5e7eb;
-      --accent:#22d3ee; --ring:#94a3b8;
+    :root {
+      --bg: #f4f7fb;
+      --bg-soft: #eef5ff;
+      --card: #ffffff;
+      --card-muted: #f8fbff;
+      --text: #102033;
+      --muted: #617089;
+      --muted-strong: #42526b;
+      --line: #dbe6f5;
+      --line-strong: #c5d5ea;
+      --blue: #477fbe;
+      --blue-dark: #2f5f95;
+      --blue-soft: #e9f3ff;
+      --cyan: #dff8ff;
+      --green: #dff8ed;
+      --shadow: 0 22px 70px rgba(51, 84, 122, .14);
+      --card-shadow: 0 14px 34px rgba(51, 84, 122, .10);
+      --radius-xl: 30px;
+      --radius-lg: 22px;
+      --radius-md: 16px;
+      --max: 1120px;
     }
+
     *, *::before, *::after { box-sizing: border-box; }
 
-    html,body{height:100%}
-    body{
-      margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
-      background: radial-gradient(80vw 80vh at 70% -10%, #172554 0%, var(--bg) 50%);
-      color:var(--text);
-    }
-    .wrap{max-width:1000px;margin:0 auto;padding:32px 20px 80px}
-    header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:10px}
-    h1{font-size:clamp(22px,3.5vw,34px);letter-spacing:.3px;margin:0}
-    .subtitle{color:#cbd5e1;font-size:14px;display:flex;flex-direction:column;gap:4px}
-    .back-link{color:var(--accent);text-decoration:none;font-size:13px;font-weight:600;align-self:flex-start}
+    html { min-height: 100%; }
 
-    .grid{display:grid;grid-template-columns:1fr;gap:18px}
-
-    .section{margin:28px 0 10px}
-    .section-title{font-size:18px;margin:8px 0 6px;color:#e2e8f0;font-weight:bold;text-align:center}
-    .section-sub{font-size:13px;color:#94a3b8;text-align:center;margin:-2px 0 14px}
-    .divider{height:1px;background:linear-gradient(90deg,transparent, #2dd4bf33 30%, #2dd4bf55 50%, #2dd4bf33 70%, transparent);margin:18px 0}
-
-    .card{background:linear-gradient(180deg,#111827 0%,#0b1220 100%);border:1px solid #1f2937;border-radius:0;box-shadow:0 8px 24px rgba(0,0,0,.35);padding:16px;width:100%}
-    .card h3{margin:0 0 8px;font-size:16px;color:#f1f5f9}
-
-    label{display:block;font-size:12px;color:#cbd5e1;margin:0 0 6px}
-
-    .row{
-      display:grid;
-      grid-template-columns: 1fr 2.25rem 1fr; /* middenkolom voor '=' */
-      align-items:center;
-      gap:10px;
-      width:100%;
+    body {
+      min-height: 100%;
+      margin: 0;
+      color: var(--text);
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      background:
+        radial-gradient(circle at top left, rgba(157, 210, 255, .58), transparent 34rem),
+        radial-gradient(circle at 90% 0%, rgba(194, 245, 255, .58), transparent 28rem),
+        linear-gradient(180deg, #fbfdff 0%, var(--bg) 64%, #edf4fd 100%);
     }
 
-    input[type="number"], input[type="text"]{
-      width:100%; appearance:none; background:#0b1220; border:1px solid #1f2937;
-      color:#e5e7eb; border-radius:0; padding:12px 12px; font-size:14px;
-      outline:none; transition:border .15s, box-shadow .15s;
+    a {
+      color: var(--blue-dark);
+      text-decoration: none;
     }
-    input:focus{border-color:var(--ring);box-shadow:0 0 0 3px rgba(148,163,184,.25)}
-    input[readonly]{opacity:.9}
-    input.dec{ ime-mode: disabled; } /* hint voor sommige browsers */
 
-    .equals{display:grid;place-items:center;height:40px;color:#94a3b8;user-select:none}
+    a:hover { text-decoration: underline; }
 
-    .swap{display:inline-flex;align-items:center;gap:8px;background:#0ea5a4;border:0;color:#042f2e;padding:10px 12px;border-radius:999px;font-weight:600;font-size:12px;cursor:pointer}
-    .swap::before{content:"↺";font-weight:700}
-    .swap:hover{filter:brightness(.95)}
+    .wrap {
+      width: min(var(--max), calc(100% - 32px));
+      margin: 0 auto;
+      padding: 34px 0 72px;
+    }
 
-    .under{display:flex;justify-content:space-between;align-items:center;margin-top:10px}
-    .help{font-size:12px;color:#94a3b8}
+    .hero {
+      position: relative;
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 22px;
+      align-items: center;
+      border: 1px solid rgba(255, 255, 255, .82);
+      border-radius: var(--radius-xl);
+      background: rgba(255, 255, 255, .72);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(20px);
+      padding: clamp(22px, 4vw, 42px);
+    }
 
-    a{color:var(--accent);text-decoration:none}
+    .hero::after {
+      content: "";
+      position: absolute;
+      right: -90px;
+      top: -130px;
+      width: 330px;
+      height: 330px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, rgba(71, 127, 190, .16), rgba(73, 211, 232, .18));
+      pointer-events: none;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      width: fit-content;
+      margin-bottom: 13px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, .82);
+      color: var(--blue-dark);
+      font-size: .82rem;
+      font-weight: 800;
+      letter-spacing: .02em;
+      padding: 7px 12px;
+      text-transform: uppercase;
+    }
+
+    .eyebrow::before {
+      content: "✈";
+      font-size: .95rem;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2rem, 5vw, 4.2rem);
+      line-height: .96;
+      letter-spacing: -.06em;
+      color: #132238;
+    }
+
+    .subtitle {
+      max-width: 760px;
+      margin: 18px 0 0;
+      color: var(--muted);
+      font-size: clamp(1rem, 1.7vw, 1.12rem);
+      line-height: 1.72;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 24px;
+    }
+
+    .back-link,
+    .jump-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      border-radius: 999px;
+      font-weight: 800;
+      transition: transform .2s ease, box-shadow .2s ease, background .2s ease;
+    }
+
+    .back-link {
+      gap: 8px;
+      background: var(--blue);
+      color: #fff;
+      box-shadow: 0 12px 24px rgba(71, 127, 190, .28);
+      padding: 11px 17px;
+    }
+
+    .back-link:hover {
+      background: var(--blue-dark);
+      text-decoration: none;
+      transform: translateY(-2px);
+    }
+
+    .jump-link {
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, .76);
+      color: var(--blue-dark);
+      padding: 10px 15px;
+    }
+
+    .jump-link:hover {
+      background: #fff;
+      text-decoration: none;
+      transform: translateY(-2px);
+      box-shadow: 0 12px 24px rgba(51, 84, 122, .10);
+    }
+
+    .hero-stat {
+      position: relative;
+      z-index: 1;
+      width: min(260px, 100%);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, .92), rgba(241, 247, 255, .92));
+      box-shadow: var(--card-shadow);
+      padding: 20px;
+    }
+
+    .hero-stat strong {
+      display: block;
+      color: var(--blue-dark);
+      font-size: 2.6rem;
+      line-height: 1;
+      letter-spacing: -.05em;
+    }
+
+    .hero-stat span {
+      display: block;
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: .95rem;
+      line-height: 1.45;
+    }
+
+    .toolbar {
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 14px;
+      align-items: center;
+      margin: 22px 0 18px;
+      border: 1px solid rgba(255, 255, 255, .78);
+      border-radius: 24px;
+      background: rgba(255, 255, 255, .82);
+      box-shadow: 0 14px 34px rgba(51, 84, 122, .10);
+      backdrop-filter: blur(16px);
+      padding: 13px;
+    }
+
+    .search-box {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-height: 48px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: #fff;
+      padding: 0 16px;
+    }
+
+    .search-box svg {
+      width: 20px;
+      height: 20px;
+      flex: 0 0 auto;
+      color: var(--blue-dark);
+    }
+
+    .search-box input {
+      width: 100%;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      color: var(--text);
+      font: inherit;
+    }
+
+    .category-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: flex-end;
+    }
+
+    .pill {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: #fff;
+      color: var(--muted-strong);
+      cursor: pointer;
+      font: inherit;
+      font-size: .9rem;
+      font-weight: 750;
+      padding: 11px 13px;
+      transition: transform .18s ease, background .18s ease, color .18s ease, border-color .18s ease;
+    }
+
+    .pill:hover {
+      transform: translateY(-1px);
+      border-color: var(--line-strong);
+    }
+
+    .pill.active {
+      border-color: rgba(71, 127, 190, .38);
+      background: var(--blue);
+      color: #fff;
+    }
+
+    .section {
+      scroll-margin-top: 110px;
+      margin: 28px 0 0;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 18px;
+      margin: 0 0 14px;
+    }
+
+    .section-title {
+      margin: 0;
+      color: #17263d;
+      font-size: clamp(1.35rem, 2.5vw, 2rem);
+      line-height: 1.15;
+      letter-spacing: -.04em;
+    }
+
+    .section-sub {
+      max-width: 680px;
+      margin: 7px 0 0;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    .section-count {
+      flex: 0 0 auto;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, .76);
+      color: var(--muted-strong);
+      font-size: .82rem;
+      font-weight: 800;
+      padding: 8px 11px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .card {
+      position: relative;
+      overflow: hidden;
+      min-height: 100%;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      background: linear-gradient(180deg, var(--card) 0%, var(--card-muted) 100%);
+      box-shadow: var(--card-shadow);
+      padding: 18px;
+      transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-3px);
+      border-color: var(--line-strong);
+      box-shadow: 0 22px 46px rgba(51, 84, 122, .15);
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 0 0 auto;
+      height: 4px;
+      background: linear-gradient(90deg, var(--blue), #61c7dd, #7dd9a7);
+      opacity: .78;
+    }
+
+    .card-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .card h3 {
+      margin: 0;
+      color: #16263c;
+      font-size: 1.04rem;
+      line-height: 1.25;
+      letter-spacing: -.015em;
+    }
+
+    .badge {
+      flex: 0 0 auto;
+      border-radius: 999px;
+      background: var(--blue-soft);
+      color: var(--blue-dark);
+      font-size: .72rem;
+      font-weight: 850;
+      padding: 6px 9px;
+      text-transform: uppercase;
+      letter-spacing: .03em;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 42px minmax(0, 1fr);
+      align-items: end;
+      gap: 10px;
+      width: 100%;
+    }
+
+    label {
+      display: block;
+      margin: 0 0 7px;
+      color: var(--muted-strong);
+      font-size: .78rem;
+      font-weight: 800;
+    }
+
+    .field { min-width: 0; }
+
+    input[type="text"] {
+      width: 100%;
+      min-height: 48px;
+      appearance: none;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      background: #fff;
+      color: var(--text);
+      font: inherit;
+      font-size: 1rem;
+      font-weight: 700;
+      outline: none;
+      padding: 12px 13px;
+      transition: border .16s ease, box-shadow .16s ease, background .16s ease;
+    }
+
+    input[type="text"]::placeholder {
+      color: #9aa8bb;
+      font-weight: 600;
+    }
+
+    input[type="text"]:focus {
+      border-color: rgba(71, 127, 190, .76);
+      box-shadow: 0 0 0 4px rgba(71, 127, 190, .13);
+    }
+
+    input[readonly] {
+      background: linear-gradient(180deg, #f9fcff, #f1f7ff);
+      color: var(--blue-dark);
+      cursor: default;
+    }
+
+    .equals {
+      display: grid;
+      place-items: center;
+      min-height: 48px;
+      margin-bottom: 0;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: #fff;
+      color: var(--blue-dark);
+      font-size: 1.25rem;
+      font-weight: 900;
+      user-select: none;
+    }
+
+    .under {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .swap {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 40px;
+      border: 0;
+      border-radius: 999px;
+      background: #132238;
+      color: #fff;
+      cursor: pointer;
+      font: inherit;
+      font-size: .82rem;
+      font-weight: 850;
+      padding: 9px 13px;
+      transition: transform .18s ease, background .18s ease, box-shadow .18s ease;
+    }
+
+    .swap::before {
+      content: "↺";
+      font-weight: 900;
+    }
+
+    .swap:hover {
+      background: var(--blue-dark);
+      box-shadow: 0 12px 22px rgba(47, 95, 149, .22);
+      transform: translateY(-1px);
+    }
+
+    .help {
+      color: var(--muted);
+      font-size: .82rem;
+      font-weight: 750;
+      text-align: right;
+    }
+
+    .empty-state {
+      display: none;
+      margin-top: 24px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      background: rgba(255, 255, 255, .82);
+      color: var(--muted);
+      padding: 24px;
+      text-align: center;
+    }
+
+    .footer-note {
+      margin-top: 34px;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      background: rgba(255, 255, 255, .68);
+      color: var(--muted);
+      line-height: 1.6;
+      padding: 18px;
+    }
+
+    .footer-note strong { color: var(--muted-strong); }
+
+    @media (max-width: 920px) {
+      .hero,
+      .toolbar {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-stat { width: 100%; }
+      .category-pills { justify-content: flex-start; }
+    }
+
+    @media (max-width: 760px) {
+      .wrap {
+        width: min(100% - 20px, var(--max));
+        padding-top: 18px;
+      }
+
+      .hero,
+      .toolbar {
+        border-radius: 22px;
+      }
+
+      .toolbar {
+        position: static;
+      }
+
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .section-head {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .row {
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+
+      .equals {
+        min-height: 34px;
+      }
+
+      .under {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .help {
+        text-align: left;
+      }
+    }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <header>
+  <main class="wrap">
+    <header class="hero">
       <div>
+        <div class="eyebrow">Flight planning utility</div>
         <h1>Aviation Unit Calculator</h1>
-        <div class="subtitle">
-          <span>A simple Unit calculator helping you through the flight planning stage. Good flights!</span>
+        <p class="subtitle">
+          A modern, lightweight unit calculator for everyday flight preparation. Convert distance, speed, fuel, pressure and aviation temperature values without leaving the browser.
+        </p>
+        <div class="hero-actions">
           <a class="back-link" href="https://flighttools.justinverstijnen.nl">← Back to Flight Tools</a>
+          <a class="jump-link" href="#temperature">Temperature conversions</a>
         </div>
       </div>
+      <aside class="hero-stat" aria-label="Calculator summary">
+        <strong id="conversionCount">0</strong>
+        <span>bidirectional aviation conversions in a clean light interface.</span>
+      </aside>
     </header>
 
-    <div class="divider"></div>
+    <section class="toolbar" aria-label="Calculator controls">
+      <label class="search-box" for="searchInput">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M10.5 4a6.5 6.5 0 0 1 5.18 10.43l3.45 3.44a.9.9 0 1 1-1.27 1.27l-3.45-3.44A6.5 6.5 0 1 1 10.5 4Zm0 1.8a4.7 4.7 0 1 0 0 9.4 4.7 4.7 0 0 0 0-9.4Z"/></svg>
+        <input id="searchInput" type="text" placeholder="Search conversion, e.g. Celsius, knots, hPa..." autocomplete="off" />
+      </label>
+      <div class="category-pills" id="categoryPills" aria-label="Conversion categories"></div>
+    </section>
 
-    <!-- DISTANCE -->
-    <div class="section">
-      <div class="section-title">Distance</div>
-      <p class="section-sub">Conversions between common aviation distance units</p>
-      <div class="grid">
-        <!-- Feet to Meters -->
-        <div class="card" data-kind="simple" data-a="Feet" data-b="Meters" data-factor="0.3048">
-          <h3>Feet to Meters</h3>
-          <label><span class="label-a">Feet</span></label>
-          <div class="row">
-            <input type="text" inputmode="decimal" pattern="[0-9,.-]*" class="input-a dec" placeholder="Enter value" />
-            <div class="equals">=</div>
-            <input type="text" class="input-b" placeholder="Result" readonly />
-          </div>
-          <div class="under">
-            <button class="swap" type="button"> Swap direction</button>
-            <span class="help factor">1 ft = 0.30 m</span>
-          </div>
-        </div>
+    <div id="sections"></div>
 
-        <!-- Nautical Miles to km -->
-        <div class="card" data-kind="simple" data-a="Nautical Miles" data-b="Kilometers" data-factor="1.852">
-          <h3>Nautical Miles to km</h3>
-          <label><span class="label-a">Nautical Miles</span></label>
-          <div class="row">
-            <input type="text" inputmode="decimal" pattern="[0-9,.-]*" class="input-a dec" placeholder="Enter value" />
-            <div class="equals">=</div>
-            <input type="text" class="input-b" placeholder="Result" readonly />
-          </div>
-          <div class="under">
-            <button class="swap" type="button"> Swap direction</button>
-            <span class="help factor">1 NM = 1.85 km</span>
-          </div>
-        </div>
+    <p class="empty-state" id="emptyState">No conversions found. Try another search term or select all categories.</p>
 
-        <!-- Inches to cm -->
-        <div class="card" data-kind="simple" data-a="Inches" data-b="Centimeters" data-factor="2.54">
-          <h3>Inches to cm</h3>
-          <label><span class="label-a">Inches</span></label>
-          <div class="row">
-            <input type="text" inputmode="decimal" pattern="[0-9,.-]*" class="input-a dec" placeholder="Enter value" />
-            <div class="equals">=</div>
-            <input type="text" class="input-b" placeholder="Result" readonly />
-          </div>
-          <div class="under">
-            <button class="swap" type="button"> Swap direction</button>
-            <span class="help factor">1 in = 2.54 cm</span>
-          </div>
-        </div>
-
-        <!-- Miles to km -->
-        <div class="card" data-kind="simple" data-a="Miles" data-b="Kilometers" data-factor="1.609344">
-          <h3>Miles to km</h3>
-          <label><span class="label-a">Miles</span></label>
-          <div class="row">
-            <input type="text" inputmode="decimal" pattern="[0-9,.-]*" class="input-a dec" placeholder="Enter value" />
-            <div class="equals">=</div>
-            <input type="text" class="input-b" placeholder="Result" readonly />
-          </div>
-          <div class="under">
-            <button class="swap" type="button"> Swap direction</button>
-            <span class="help factor">1 mi = 1.61 km</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="divider"></div>
-
-    <!-- SPEED -->
-    <div class="section">
-      <div class="section-title">Speed</div>
-      <p class="section-sub">Conversions for airspeed units</p>
-      <div class="grid">
-        <!-- Knots to Kilometers per hour -->
-        <div class="card" data-kind="simple" data-a="Knots" data-b="Kilometers per hour" data-factor="1.852">
-          <h3>Knots to Kilometers per hour</h3>
-          <label><span class="label-a">Knots</span></label>
-          <div class="row">
-            <input type="text" inputmode="decimal" pattern="[0-9,.-]*" class="input-a dec" placeholder="Enter value" />
-            <div class="equals">=</div>
-            <input type="text" class="input-b" placeholder="Result" readonly />
-          </div>
-          <div class="under">
-            <button class="swap" type="button"> Swap direction</button>
-            <span class="help factor">1 kt = 1.85 km/h</span>
-          </div>
-        </div>
-
-        <!-- Knots to Miles per hour -->
-        <div class="card" data-kind="simple" data-a="Knots" data-b="Miles per hour" data-factor="1.150779448">
-          <h3>Knots to Miles per hour</h3>
-          <label><span class="label-a">Knots</span></label>
-          <div class="row">
-            <input type="text" inputmode="decimal" pattern="[0-9,.-]*" class="input-a dec" placeholder="Enter value" />
-            <div class="equals">=</div>
-            <input type="text" class="input-b" placeholder="Result" readonly />
-          </div>
-          <div class="under">
-            <button class="swap" type="button"> Swap direction</button>
-            <span class="help factor">1 kt = 1.15 mph</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="divider"></div>
-
-    <!-- VOLUME & MASS (Fuel) -->
-    <div class="section">
-      <div class="section-title">Volume & Mass</div>
-      <p class="section-sub">Conversions for fuel volumes and weights based on Cessna 172</p>
-
-      <div class="grid">
-        <!-- US Gallons to Pounds (fuel) -->
-        <div class="card" data-kind="fuelMass" data-a="US Gallons" data-b="Pounds (fuel)">
-          <h3>US Gallons to Pounds (fuel)</h3>
-          <label><span class="label-a">US Gallons</span></label>
-          <div class="row">
-            <input type="text" inputmode="decimal" pattern="[0-9,.-]*" class="input-a dec" placeholder="Enter value" />
-            <div class="equals">=</div>
-            <input type="text" class="input-b" placeholder="Result" readonly />
-          </div>
-          <div class="under">
-            <button class="swap" type="button"> Swap direction</button>
-            <span class="help factor">1 USG = 6.01 lb</span>
-          </div>
-        </div>
-
-        <!-- Pounds to Kilograms (mass) -->
-        <div class="card" data-kind="simple" data-a="Pounds" data-b="Kilograms" data-factor="0.45359237">
-          <h3>Pounds to Kilograms</h3>
-          <label><span class="label-a">Pounds</span></label>
-          <div class="row">
-            <input type="text" inputmode="decimal" pattern="[0-9,.-]*" class="input-a dec" placeholder="Enter value" />
-            <div class="equals">=</div>
-            <input type="text" class="input-b" placeholder="Result" readonly />
-          </div>
-          <div class="under">
-            <button class="swap" type="button"> Swap direction</button>
-            <span class="help factor">1 lb = 0.45 kg</span>
-          </div>
-        </div>
-
-        <!-- US Gallons to Liters -->
-        <div class="card" data-kind="simple" data-a="US Gallons" data-b="Liters" data-factor="3.785411784">
-          <h3>US Gallons to Liters</h3>
-          <label><span class="label-a">US Gallons</span></label>
-          <div class="row">
-            <input type="text" inputmode="decimal" pattern="[0-9,.-]*" class="input-a dec" placeholder="Enter value" />
-            <div class="equals">=</div>
-            <input type="text" class="input-b" placeholder="Result" readonly />
-          </div>
-          <div class="under">
-            <button class="swap" type="button"> Swap direction</button>
-            <span class="help factor">1 USG = 3.79 L</span>
-          </div>
-        </div>
-
-        <!-- Liters (fuel) to Kilograms (fuel) -->
-        <div class="card" data-kind="fuelKg" data-a="Liters (fuel)" data-b="Kilograms (fuel)">
-          <h3>Liters (fuel) to Kilograms (fuel)</h3>
-          <label><span class="label-a">Liters (fuel)</span></label>
-          <div class="row">
-            <input type="text" inputmode="decimal" pattern="[0-9,.-]*" class="input-a dec" placeholder="Enter value" />
-            <div class="equals">=</div>
-            <input type="text" class="input-b" placeholder="Result" readonly />
-          </div>
-          <div class="under">
-            <button class="swap" type="button"> Swap direction</button>
-            <span class="help factor">1 L = 0.72 kg</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="divider"></div>
-
-    <!-- AIR PRESSURE -->
-    <div class="section">
-      <div class="section-title">Air Pressure</div>
-      <p class="section-sub">Conversions between hPa and inHg</p>
-      <div class="grid">
-        <div class="card" data-kind="simple" data-a="hPa" data-b="inHg" data-factor="0.0295299830714">
-          <h3>hPa to inHg</h3>
-          <label><span class="label-a">hPa</span></label>
-          <div class="row">
-            <input type="text" inputmode="decimal" pattern="[0-9,.-]*" class="input-a dec" placeholder="Enter value" />
-            <div class="equals">=</div>
-            <input type="text" class="input-b" placeholder="Result" readonly />
-          </div>
-          <div class="under">
-            <button class="swap" type="button"> Swap direction</button>
-            <span class="help factor">1 hPa = 0.03 inHg</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-  </div>
+    <p class="footer-note">
+      <strong>Note:</strong> Fuel mass conversions use the existing fixed AVGAS-style density value from the original tool: 0.72 kg/L. Always check aircraft documentation and local procedures for operational planning.
+    </p>
+  </main>
 
   <script>
-    // ---- Constants (fuel density fixed for C172) ----
+    // ---- Constants from the original tool ----
     const DENS_KG_PER_L = 0.72;
     const LB_PER_KG = 2.2046226218;
     const L_PER_USG = 3.785411784;
     const LB_PER_USG = DENS_KG_PER_L * LB_PER_KG * L_PER_USG; // ≈ 6.01
 
-    // ---- Helpers ----
-    const toNumber = (el) => {
-      // sta kommagetallen toe
-      const raw = String(el.value).replace(',', '.');
-      return parseFloat(raw);
-    };
-
-    const fmt2 = (v) => {
-      if (!isFinite(v)) return '';
-      return Number(v).toFixed(2); // altijd 2 decimalen
-    };
-
-    function updateTitle(card, a2b){
-      const aName = card.dataset.a, bName = card.dataset.b;
-      card.querySelector('h3').textContent = a2b ? `${aName} to ${bName}` : `${bName} to ${aName}`;
-      card.querySelector('.label-a').textContent = a2b ? aName : bName;
-    }
-
-    function abbr(name){
-      return name
-        .replace(/Kilometers per hour/i,'km/h')
-        .replace(/Miles per hour/i,'mph')
-        .replace(/Kilometers/i,'km')
-        .replace(/Centimeters/i,'cm')
-        .replace(/Nautical Miles/i,'NM')
-        .replace(/Meters/i,'m')
-        .replace(/Feet/i,'ft')
-        .replace(/Inches/i,'in')
-        .replace(/US Gallons/i,'USG')
-        .replace(/Pounds/i,'lb')
-        .replace(/Kilograms/i,'kg')
-        .replace(/Liters/i,'L');
-    }
-
-    function updateFactorText(card, a2b){
-      const factorEl = card.querySelector('.factor');
-      const aName = card.dataset.a, bName = card.dataset.b;
-
-      if (card.dataset.kind === 'simple'){
-        const factor = parseFloat(card.dataset.factor);
-        factorEl.textContent = a2b
-          ? `1 ${abbr(aName)} = ${fmt2(factor)} ${abbr(bName)}`
-          : `1 ${abbr(bName)} = ${fmt2(1/factor)} ${abbr(aName)}`;
-      } else if (card.dataset.kind === 'fuelMass'){
-        factorEl.textContent = a2b
-          ? `1 USG = ${fmt2(LB_PER_USG)} lb`
-          : `1 lb = ${fmt2(1/LB_PER_USG)} USG`;
-      } else if (card.dataset.kind === 'fuelKg'){
-        factorEl.textContent = a2b
-          ? `1 L = ${fmt2(DENS_KG_PER_L)} kg`
-          : `1 kg = ${fmt2(1/DENS_KG_PER_L)} L`;
+    const sections = [
+      {
+        id: "distance",
+        title: "Distance",
+        subtitle: "Conversions between common aviation distance units.",
+        conversions: [
+          { a: "Feet", b: "Meters", kind: "simple", factor: 0.3048 },
+          { a: "Nautical Miles", b: "Kilometers", kind: "simple", factor: 1.852 },
+          { a: "Inches", b: "Centimeters", kind: "simple", factor: 2.54 },
+          { a: "Miles", b: "Kilometers", kind: "simple", factor: 1.609344 }
+        ]
+      },
+      {
+        id: "speed",
+        title: "Speed",
+        subtitle: "Airspeed, groundspeed and vertical speed conversions.",
+        conversions: [
+          { a: "Knots", b: "Kilometers per hour", kind: "simple", factor: 1.852 },
+          { a: "Knots", b: "Miles per hour", kind: "simple", factor: 1.150779448 },
+          { a: "Knots", b: "Meters per second", kind: "simple", factor: 0.514444444 },
+          { a: "Feet per minute", b: "Meters per second", kind: "simple", factor: 0.00508 }
+        ]
+      },
+      {
+        id: "fuel",
+        title: "Volume & Mass",
+        subtitle: "Conversions for fuel volumes and weights based on the original Cessna 172 setup.",
+        conversions: [
+          { a: "US Gallons", b: "Pounds (fuel)", kind: "fuelMass" },
+          { a: "Pounds", b: "Kilograms", kind: "simple", factor: 0.45359237 },
+          { a: "US Gallons", b: "Liters", kind: "simple", factor: L_PER_USG },
+          { a: "Liters (fuel)", b: "Kilograms (fuel)", kind: "fuelKg" }
+        ]
+      },
+      {
+        id: "pressure",
+        title: "Air Pressure",
+        subtitle: "QNH and altimeter setting conversions.",
+        conversions: [
+          { a: "hPa", b: "inHg", kind: "simple", factor: 0.0295299830714 },
+          { a: "hPa", b: "mmHg", kind: "simple", factor: 0.750061683 }
+        ]
+      },
+      {
+        id: "temperature",
+        title: "Temperature",
+        subtitle: "Aviation weather and performance temperature conversions.",
+        conversions: [
+          {
+            a: "Celsius", b: "Fahrenheit", kind: "formula",
+            toB: (v) => (v * 9 / 5) + 32,
+            toA: (v) => (v - 32) * 5 / 9,
+            formulaAtoB: "°F = (°C × 9/5) + 32",
+            formulaBtoA: "°C = (°F - 32) × 5/9"
+          },
+          {
+            a: "Celsius", b: "Kelvin", kind: "formula",
+            toB: (v) => v + 273.15,
+            toA: (v) => v - 273.15,
+            formulaAtoB: "K = °C + 273.15",
+            formulaBtoA: "°C = K - 273.15"
+          },
+          {
+            a: "Fahrenheit", b: "Kelvin", kind: "formula",
+            toB: (v) => ((v - 32) * 5 / 9) + 273.15,
+            toA: (v) => ((v - 273.15) * 9 / 5) + 32,
+            formulaAtoB: "K = (°F - 32) × 5/9 + 273.15",
+            formulaBtoA: "°F = (K - 273.15) × 9/5 + 32"
+          }
+        ]
       }
+    ];
+
+    const sectionsEl = document.getElementById("sections");
+    const searchInput = document.getElementById("searchInput");
+    const categoryPills = document.getElementById("categoryPills");
+    const emptyState = document.getElementById("emptyState");
+    const conversionCount = document.getElementById("conversionCount");
+
+    let activeCategory = "all";
+
+    const abbrMap = [
+      [/Kilometers per hour/i, "km/h"],
+      [/Meters per second/i, "m/s"],
+      [/Feet per minute/i, "ft/min"],
+      [/Miles per hour/i, "mph"],
+      [/Kilometers/i, "km"],
+      [/Centimeters/i, "cm"],
+      [/Nautical Miles/i, "NM"],
+      [/Meters/i, "m"],
+      [/Feet/i, "ft"],
+      [/Inches/i, "in"],
+      [/US Gallons/i, "USG"],
+      [/Pounds/i, "lb"],
+      [/Kilograms/i, "kg"],
+      [/Liters/i, "L"],
+      [/Celsius/i, "°C"],
+      [/Fahrenheit/i, "°F"],
+      [/Kelvin/i, "K"]
+    ];
+
+    function escapeHtml(value) {
+      return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
     }
 
-    // ---- Bindings ----
-    function bindSimple(card){
-      const factor = parseFloat(card.dataset.factor);
-      const inputA = card.querySelector('.input-a');
-      const inputB = card.querySelector('.input-b');
-      let a2b = true;
+    function toNumber(input) {
+      const normalized = String(input.value).trim().replace(",", ".");
+      return Number.parseFloat(normalized);
+    }
 
-      const recalc = ()=>{
-        const val = toNumber(inputA);
-        if (isNaN(val)) { inputB.value=''; return; }
-        inputB.value = fmt2(a2b ? val * factor : val / factor);
-      };
-
-      updateTitle(card, a2b);
-      updateFactorText(card, a2b);
-
-      inputA.addEventListener('input', recalc);
-      card.querySelector('.swap').addEventListener('click', ()=>{
-        a2b = !a2b;
-        updateTitle(card, a2b);
-        updateFactorText(card, a2b);
-        recalc();
+    function formatNumber(value) {
+      if (!Number.isFinite(value)) return "";
+      const rounded = Math.abs(value) >= 1000 ? 2 : 3;
+      return Number(value).toLocaleString("en-US", {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: rounded
       });
     }
 
-    function bindFuelMass(card){
-      const inputA = card.querySelector('.input-a');
-      const inputB = card.querySelector('.input-b');
-      let a2b = true; // USG -> lb
+    function abbr(name) {
+      let result = String(name);
+      abbrMap.forEach(([pattern, replacement]) => {
+        result = result.replace(pattern, replacement);
+      });
+      return result;
+    }
 
-      const recalc = ()=>{
-        const val = toNumber(inputA);
-        if (isNaN(val)) { inputB.value=''; return; }
-        inputB.value = fmt2(a2b ? val * LB_PER_USG : val / LB_PER_USG);
-      };
+    function getFactorText(conversion, aToB) {
+      if (conversion.kind === "simple") {
+        return aToB
+          ? `1 ${abbr(conversion.a)} = ${formatNumber(conversion.factor)} ${abbr(conversion.b)}`
+          : `1 ${abbr(conversion.b)} = ${formatNumber(1 / conversion.factor)} ${abbr(conversion.a)}`;
+      }
 
-      updateTitle(card, a2b);
-      updateFactorText(card, a2b);
+      if (conversion.kind === "fuelMass") {
+        return aToB
+          ? `1 USG = ${formatNumber(LB_PER_USG)} lb`
+          : `1 lb = ${formatNumber(1 / LB_PER_USG)} USG`;
+      }
 
-      inputA.addEventListener('input', recalc);
-      card.querySelector('.swap').addEventListener('click', ()=>{
-        a2b = !a2b;
-        updateTitle(card, a2b);
-        updateFactorText(card, a2b);
+      if (conversion.kind === "fuelKg") {
+        return aToB
+          ? `1 L = ${formatNumber(DENS_KG_PER_L)} kg`
+          : `1 kg = ${formatNumber(1 / DENS_KG_PER_L)} L`;
+      }
+
+      if (conversion.kind === "formula") {
+        return aToB ? conversion.formulaAtoB : conversion.formulaBtoA;
+      }
+
+      return "";
+    }
+
+    function calculate(conversion, value, aToB) {
+      if (conversion.kind === "simple") {
+        return aToB ? value * conversion.factor : value / conversion.factor;
+      }
+
+      if (conversion.kind === "fuelMass") {
+        return aToB ? value * LB_PER_USG : value / LB_PER_USG;
+      }
+
+      if (conversion.kind === "fuelKg") {
+        return aToB ? value * DENS_KG_PER_L : value / DENS_KG_PER_L;
+      }
+
+      if (conversion.kind === "formula") {
+        return aToB ? conversion.toB(value) : conversion.toA(value);
+      }
+
+      return NaN;
+    }
+
+    function cardSearchText(section, conversion) {
+      return [
+        section.title,
+        section.subtitle,
+        conversion.a,
+        conversion.b,
+        abbr(conversion.a),
+        abbr(conversion.b),
+        conversion.formulaAtoB,
+        conversion.formulaBtoA
+      ].join(" ").toLowerCase();
+    }
+
+    function createCard(section, conversion, index) {
+      const card = document.createElement("article");
+      card.className = "card";
+      card.dataset.category = section.id;
+      card.dataset.search = cardSearchText(section, conversion);
+      card.innerHTML = `
+        <div class="card-top">
+          <h3 data-title></h3>
+          <span class="badge">${escapeHtml(section.title)}</span>
+        </div>
+        <div class="row">
+          <div class="field">
+            <label><span data-label-a></span></label>
+            <input type="text" inputmode="decimal" pattern="[0-9,.-]*" data-input-a placeholder="Enter value" aria-label="Input value ${index + 1}" />
+          </div>
+          <div class="equals" aria-hidden="true">=</div>
+          <div class="field">
+            <label><span data-label-b></span></label>
+            <input type="text" data-input-b placeholder="Result" readonly aria-label="Conversion result ${index + 1}" />
+          </div>
+        </div>
+        <div class="under">
+          <button class="swap" type="button">Swap direction</button>
+          <span class="help" data-factor></span>
+        </div>
+      `;
+
+      const title = card.querySelector("[data-title]");
+      const labelA = card.querySelector("[data-label-a]");
+      const labelB = card.querySelector("[data-label-b]");
+      const inputA = card.querySelector("[data-input-a]");
+      const inputB = card.querySelector("[data-input-b]");
+      const factor = card.querySelector("[data-factor]");
+      const swap = card.querySelector(".swap");
+      let aToB = true;
+
+      function updateStaticText() {
+        const left = aToB ? conversion.a : conversion.b;
+        const right = aToB ? conversion.b : conversion.a;
+        title.textContent = `${left} to ${right}`;
+        labelA.textContent = left;
+        labelB.textContent = right;
+        factor.textContent = getFactorText(conversion, aToB);
+      }
+
+      function recalc() {
+        const value = toNumber(inputA);
+        if (Number.isNaN(value)) {
+          inputB.value = "";
+          return;
+        }
+        inputB.value = formatNumber(calculate(conversion, value, aToB));
+      }
+
+      inputA.addEventListener("input", recalc);
+      swap.addEventListener("click", () => {
+        aToB = !aToB;
+        const previousResult = inputB.value;
+        updateStaticText();
+        if (previousResult) {
+          inputA.value = previousResult.replace(/,/g, "");
+        }
         recalc();
+        inputA.focus();
+      });
+
+      updateStaticText();
+      return card;
+    }
+
+    function renderCategoryPills() {
+      const total = sections.reduce((sum, section) => sum + section.conversions.length, 0);
+      conversionCount.textContent = total;
+
+      const pills = [
+        { id: "all", title: "All", count: total },
+        ...sections.map((section) => ({
+          id: section.id,
+          title: section.title,
+          count: section.conversions.length
+        }))
+      ];
+
+      categoryPills.innerHTML = pills.map((pill) => `
+        <button class="pill${pill.id === activeCategory ? " active" : ""}" type="button" data-category="${escapeHtml(pill.id)}">
+          ${escapeHtml(pill.title)} <span aria-hidden="true">${pill.count}</span>
+        </button>
+      `).join("");
+    }
+
+    function renderSections() {
+      sectionsEl.innerHTML = "";
+      let cardIndex = 0;
+
+      sections.forEach((section) => {
+        const sectionEl = document.createElement("section");
+        sectionEl.className = "section";
+        sectionEl.id = section.id;
+        sectionEl.dataset.categorySection = section.id;
+        sectionEl.innerHTML = `
+          <div class="section-head">
+            <div>
+              <h2 class="section-title">${escapeHtml(section.title)}</h2>
+              <p class="section-sub">${escapeHtml(section.subtitle)}</p>
+            </div>
+            <span class="section-count">${section.conversions.length} conversions</span>
+          </div>
+          <div class="grid"></div>
+        `;
+
+        const grid = sectionEl.querySelector(".grid");
+        section.conversions.forEach((conversion) => {
+          grid.appendChild(createCard(section, conversion, cardIndex));
+          cardIndex += 1;
+        });
+        sectionsEl.appendChild(sectionEl);
       });
     }
 
-    function bindFuelKg(card){
-      const inputA = card.querySelector('.input-a');
-      const inputB = card.querySelector('.input-b');
-      let a2b = true; // L -> kg
+    function filterCards() {
+      const query = searchInput.value.trim().toLowerCase();
+      let visibleCount = 0;
 
-      const recalc = ()=>{
-        const val = toNumber(inputA);
-        if (isNaN(val)) { inputB.value=''; return; }
-        inputB.value = fmt2(a2b ? val * DENS_KG_PER_L : val / DENS_KG_PER_L);
-      };
-
-      updateTitle(card, a2b);
-      updateFactorText(card, a2b);
-
-      inputA.addEventListener('input', recalc);
-      card.querySelector('.swap').addEventListener('click', ()=>{
-        a2b = !a2b;
-        updateTitle(card, a2b);
-        updateFactorText(card, a2b);
-        recalc();
+      document.querySelectorAll(".card").forEach((card) => {
+        const matchesCategory = activeCategory === "all" || card.dataset.category === activeCategory;
+        const matchesQuery = !query || card.dataset.search.includes(query);
+        const visible = matchesCategory && matchesQuery;
+        card.hidden = !visible;
+        if (visible) visibleCount += 1;
       });
+
+      document.querySelectorAll("[data-category-section]").forEach((section) => {
+        const hasVisibleCards = Array.from(section.querySelectorAll(".card")).some((card) => !card.hidden);
+        section.hidden = !hasVisibleCards;
+      });
+
+      emptyState.style.display = visibleCount ? "none" : "block";
     }
 
-    // Bind all cards
-    document.querySelectorAll('.card').forEach(card=>{
-      const kind = card.dataset.kind;
-      if (kind === 'simple') bindSimple(card);
-      if (kind === 'fuelMass') bindFuelMass(card);
-      if (kind === 'fuelKg') bindFuelKg(card);
+    categoryPills.addEventListener("click", (event) => {
+      const button = event.target.closest("[data-category]");
+      if (!button) return;
+      activeCategory = button.dataset.category;
+      renderCategoryPills();
+      filterCards();
     });
+
+    searchInput.addEventListener("input", filterCards);
+
+    renderCategoryPills();
+    renderSections();
+    filterCards();
   </script>
 </body>
 </html>
