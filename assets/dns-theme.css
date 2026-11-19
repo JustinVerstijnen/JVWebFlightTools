@@ -1,0 +1,103 @@
+/* DNS Megatool visual theme. Loaded after each tool's existing stylesheet.
+   Layout, dimensions, responsive rules and application scripts stay in place.
+   Deliberately not loaded by flightlessontracker. */
+:root {
+  --background-image: url("https://sajvwebsiteblobstorage.blob.core.windows.net/flightblog/tools/featured-background_blur.jpg");
+  --bg: #f2f2f2;
+  --bg1: #f2f2f2;
+  --bg2: #f2f2f2;
+  --panel: #fff;
+  --card: #fff;
+  --card-strong: #fff;
+  --card-muted: #f7f7f7;
+  --text: #222;
+  --ink: #222;
+  --muted: #555;
+  --muted-strong: #444;
+  --line: #ddd;
+  --line-strong: #ccc;
+  --blue: #8eafda;
+  --blue-dark: #4f7fb5;
+  --blue-soft: #edf4fb;
+  --accent: #4f7fb5;
+  --accent2: #277b43;
+  --danger: #b4233d;
+  --radius: 8px;
+  --radius-xl: 8px;
+  --radius-lg: 8px;
+  --radius-md: 4px;
+  --shadow: 0 0 15px rgba(0,0,0,.1);
+  --card-shadow: 0 0 15px rgba(0,0,0,.1);
+  font-family: 'Segoe UI', sans-serif;
+  background: #f2f2f2;
+  color-scheme: light;
+}
+body {
+  font-family: 'Segoe UI', sans-serif;
+  color: var(--text);
+  background: linear-gradient(180deg, rgba(255,255,255,.48), rgba(255,255,255,.74)),
+    var(--background-image) center / cover fixed no-repeat;
+}
+body :is(.app, .tools-container, .tool-card, .hero, .toolbar, .card, .weather-card) {
+  background: #fff;
+  border-color: #ddd;
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+  backdrop-filter: none;
+}
+body :is(.panel, .hero-stat, .result, .tile, .details, .mode, .unit, .footer-note, .empty-state, .equals, .metar-item) {
+  background: #f7f7f7;
+  border-color: #ddd;
+  border-radius: 8px;
+  box-shadow: none;
+}
+body :is(h1, h2, h3) { color: #222; }
+body :is(.subtitle, .intro, .hint, .k, .group-title, .row small) { color: #555; }
+body :is(input[type=number], input[type=text], input[type=search], select) {
+  font-family: inherit;
+  color: #222;
+  background-color: #fff;
+  border-color: #ccc;
+  border-radius: 4px;
+  box-shadow: none;
+}
+body input[readonly] { background: #f2f2f2; color: #4f7fb5; }
+body input[type=range], body input[type=radio] { accent-color: #77b0de; }
+body :is(button, .tool-primary, .back-link, .jump-link) {
+  font-family: inherit;
+  background: #8eafda;
+  color: #fff;
+  border-color: transparent;
+  border-radius: 4px;
+  box-shadow: none;
+}
+body :is(button, .tool-primary, .back-link, .jump-link):hover {
+  background: #669fce;
+  box-shadow: none;
+  filter: none;
+}
+body button.primary { background: #77b0de; }
+body button.primary:hover { background: #669fce; }
+body :is(.github-main, .tool-github) { background: #333; border-radius: 4px; box-shadow: none; }
+body :is(.search-wrap, .search-box) { background: #fff; border-color: #ccc; border-radius: 4px; box-shadow: none; }
+body :is(.pill, .badge, .section-count, .eyebrow) { background: #edf4fb; color: #365f8e; border-color: #ccdceb; border-radius: 4px; }
+body .pill.active { background: #77b0de; color: #fff; border-color: #77b0de; }
+body .hero::after, body .card::before { background: none; }
+body .search-box input, body .search-wrap input { border: 0; background: transparent; }
+body :is(.tool-card, .card, .weather-card):hover { box-shadow: var(--shadow); border-color: #8eafda; }
+body :is(a, button, input, select):focus-visible { outline: 2px solid #4f7fb5; outline-offset: 3px; }
+body .pane { border-color: #ddd; }
+body .warn { color: #9c2036; background: #fff0f2; border-color: #e2a4af; border-radius: 4px; }
+body .canvas-wrap, body canvas { border-radius: 8px; border-color: #ddd; }
+/* Preserve the compass drawing and its semantic colours on its dark instrument face. */
+body[data-tool=runwayvisualizer] .heading-text { fill: #7cc4ff; }
+body[data-tool=runwayvisualizer] #headingRecip { fill: #9fe870; }
+body[data-tool=runwayvisualizer] .kpi .card { background: #fff; border-color: #ddd; border-radius: 8px; }
+body[data-tool=runwayvisualizer] .cardinal-text { fill: #555; }
+body[data-tool=weatherpreparation] .sky-header { background: rgba(255,255,255,.9); color: #222; box-shadow: var(--shadow); }
+body[data-tool=weatherpreparation] .cloud { opacity: .25; }
+body[data-tool=weatherpreparation] .icon { background: #edf4fb; border-radius: 8px; box-shadow: none; }
+body[data-tool=weatherpreparation] .details { background: transparent; }
+/* Full-screen map geometry is intentionally retained. */
+body[data-tool=crossing-usa] .leaflet-popup-content-wrapper { border-radius: 8px; box-shadow: var(--shadow); }
+body[data-tool=crossing-usa] .leaflet-container { font-family: 'Segoe UI', sans-serif; }

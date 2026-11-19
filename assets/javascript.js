@@ -4,7 +4,7 @@ const tools = [
     description: "Convert common aviation units quickly, including distance, speed, pressure, temperature and other values used during flight preparation.",
     toolUrl: "unitcalculator/index.html",
     shortcut: "flighttools.justinverstijnen.nl/unitcalculator",
-    github: "https://github.com/JustinVerstijnen/JVFlightToolsSWA/tree/main/unitcalculator",
+    github: "https://github.com/JustinVerstijnen/JVWebFlightTools/tree/main/unitcalculator",
     image: "unitcalculator/unitcalculator.png"
   },
   {
@@ -12,7 +12,7 @@ const tools = [
     description: "Visualize runway orientation and runway numbers to support runway briefing and wind/runway awareness.",
     toolUrl: "runwayvisualizer/index.html",
     shortcut: "flighttools.justinverstijnen.nl/runwayvisualizer",
-    github: "https://github.com/JustinVerstijnen/JVFlightToolsSWA/tree/main/runwayvisualizer",
+    github: "https://github.com/JustinVerstijnen/JVWebFlightTools/tree/main/runwayvisualizer",
     image: "runwayvisualizer/runwayvisualizer.jpeg"
   },
   {
@@ -20,7 +20,7 @@ const tools = [
     description: "Track flight lessons and keep practical training progress organized in one simple overview.",
     toolUrl: "flightlessontracker/index.html",
     shortcut: "flighttools.justinverstijnen.nl/flightlessontracker",
-    github: "https://github.com/JustinVerstijnen/JVFlightToolsSWA/tree/main/flightlessontracker",
+    github: "https://github.com/JustinVerstijnen/JVWebFlightTools/tree/main/flightlessontracker",
     image: "flightlessontracker/flightlessontracker.png"
   },
   {
@@ -28,7 +28,7 @@ const tools = [
     description: "Calculate pressure altitude and density altitude for performance planning based on atmospheric conditions.",
     toolUrl: "pressuredensityaltitudecalculator/index.html",
     shortcut: "flighttools.justinverstijnen.nl/pressuredensityaltitudecalculator",
-    github: "https://github.com/JustinVerstijnen/JVFlightToolsSWA/tree/main/pressuredensityaltitudecalculator",
+    github: "https://github.com/JustinVerstijnen/JVWebFlightTools/tree/main/pressuredensityaltitudecalculator",
     image: "pressuredensityaltitudecalculator/pressuredensityaltitudecalculator.png"
   },
   {
@@ -36,7 +36,7 @@ const tools = [
     description: "Calculate course-related values for flight planning and navigation preparation.",
     toolUrl: "coursecalculator/index.html",
     shortcut: "flighttools.justinverstijnen.nl/coursecalculator",
-    github: "https://github.com/JustinVerstijnen/JVFlightToolsSWA/tree/main/coursecalculator",
+    github: "https://github.com/JustinVerstijnen/JVWebFlightTools/tree/main/coursecalculator",
     image: "coursecalculator/coursecalculator.png"
   },
   {
@@ -44,7 +44,7 @@ const tools = [
     description: "Estimate top of descent information to support descent planning during navigation preparation.",
     toolUrl: "topofdescentcalculator/index.html",
     shortcut: "flighttools.justinverstijnen.nl/topofdescentcalculator",
-    github: "https://github.com/JustinVerstijnen/JVFlightToolsSWA/tree/main/topofdescentcalculator",
+    github: "https://github.com/JustinVerstijnen/JVWebFlightTools/tree/main/topofdescentcalculator",
     image: "topofdescentcalculator/topofdescent.png"
   },
   {
@@ -52,7 +52,7 @@ const tools = [
     description: "Prepare and review weather information for flights with a dedicated weather preparation workflow.",
     toolUrl: "weatherpreparation/index.html",
     shortcut: "flighttools.justinverstijnen.nl/weatherpreparation",
-    github: "https://github.com/JustinVerstijnen/JVFlightToolsSWA/tree/main/weatherpreparation",
+    github: "https://github.com/JustinVerstijnen/JVWebFlightTools/tree/main/weatherpreparation",
     image: "weatherpreparation/weatherpreparation.png"
   }
 ];
@@ -84,7 +84,6 @@ function createToolCard(tool) {
         <a class="tool-primary" href="${tool.toolUrl}" target="_blank" rel="noopener noreferrer">Use tool</a>
         <a class="tool-github" href="${tool.github}" target="_blank" rel="noopener noreferrer">${githubSvg()} GitHub</a>
       </div>
-      <a class="shortcut-link" href="https://${tool.shortcut}" target="_blank" rel="noopener noreferrer">${tool.shortcut}</a>
     </div>
   `;
   return article;

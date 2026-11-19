@@ -1,0 +1,36 @@
+/* Shared identity; deliberately not loaded by the homepage or lesson tracker. */
+body .tool-heading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 12px;
+  margin: 0 0 24px;
+}
+body .tool-heading > div { width: 100%; }
+body .tool-heading h1 { margin: 0 0 10px; }
+body .tool-heading :is(p, .subtitle, .sub, .intro) { max-width: 760px; margin: 0 auto; color: #555; }
+body .tool-brand { display: inline-flex; flex: 0 0 auto; border-radius: 8px; transition: transform .18s ease; }
+body .tool-brand img { display: block; width: 52px; height: 52px; object-fit: contain; }
+body .tool-brand:hover { transform: translateY(-2px); }
+body .tool-brand:focus-visible, body .tool-footer a:focus-visible { outline: 2px solid #4f7fb5; outline-offset: 4px; }
+body .tool-footer { margin-top: 32px; padding-top: 16px; text-align: center; font: 8.5pt/1.6 'Segoe UI', sans-serif; color: #777; }
+body .tool-footer a { color: #777; text-decoration: none; transition: color .18s ease; }
+body .tool-footer a:hover { color: #4f7fb5; text-decoration: none; }
+body[data-tool=unitcalculator] .tool-heading { display: flex; }
+body[data-tool=unitcalculator] .hero-actions { justify-content: center; }
+body[data-tool=topofdescentcalculator] { height: auto; min-height: 100vh; align-items: flex-start; }
+body[data-tool=runwayvisualizer] { height: auto; min-height: 100vh; align-items: start; }
+body[data-tool=topofdescentcalculator] .wrap { padding: 24px; background: #fff; border-radius: 8px; box-shadow: 0 0 15px rgba(0,0,0,.1); }
+body[data-tool=topofdescentcalculator] .card { box-shadow: none; }
+body[data-tool=topofdescentcalculator] .results { display: flex; flex-direction: column; }
+body[data-tool=topofdescentcalculator] .wind-note { order: 1; margin-top: 14px; }
+body[data-tool=crossing-usa] { height: auto; min-height: 100vh; padding: 24px; }
+body[data-tool=crossing-usa] .map-shell { max-width: 1200px; margin: auto; padding: 24px; background: #fff; border-radius: 8px; box-shadow: 0 0 15px rgba(0,0,0,.1); }
+body[data-tool=crossing-usa] .folium-map { height: 65vh !important; min-height: 320px; }
+@media(max-width: 600px) {
+  body[data-tool=topofdescentcalculator] .wrap { padding: 18px; }
+  body[data-tool=crossing-usa] { padding: 12px; }
+  body[data-tool=crossing-usa] .map-shell { padding: 18px; }
+}

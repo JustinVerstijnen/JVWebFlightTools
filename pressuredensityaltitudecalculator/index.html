@@ -1,10 +1,10 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <link rel="icon" href="/assets/favicon.ico" sizes="any">
-  <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png">
-  <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+  
+  
+  
+  
 
   <script defer src="https://cloud.umami.is/script.js" data-website-id="39a40810-ae41-42a4-bf28-0cd73275c460"></script>
   <meta charset="utf-8">
@@ -166,11 +166,16 @@
       canvas { height: 250px; }
     }
   </style>
+  <link rel="stylesheet" href="../assets/dns-theme.css">
+  <link rel="icon" type="image/png" href="../assets/flightblog-logo.png">
+  <link rel="apple-touch-icon" href="../assets/flightblog-logo.png">
+<link rel="stylesheet" href="../assets/branding.css">
+<script defer src="../assets/branding.js"></script>
 </head>
-<body>
+<body data-tool="pressuredensityaltitudecalculator">
   <main class="app">
-    <h1>Pressure &amp; Density Altitude Visual Calculator</h1>
-    <p class="intro">A simple visual calculator showing field elevation, the QNH sea-level reference, pressure altitude, and density altitude.</p>
+    <header class="tool-heading"><a class="tool-brand" href="https://flightblog.justinverstijnen.nl/" target="_blank" rel="noopener noreferrer" aria-label="Visit JV Flight Blog"><img src="../assets/flightblog-logo.png" alt="JV Flight Blog" width="52" height="52"></a><h1>Pressure &amp; Density Altitude Visual Calculator</h1>
+    <p class="intro">A simple visual calculator showing field elevation, the QNH sea-level reference, pressure altitude, and density altitude.</p></header>
 
     <section class="controls" aria-label="Inputs">
       <div class="field">
@@ -220,7 +225,8 @@
       PA = Elevation + (1013.25 − QNH) × 27 ft/hPa<br>
       DA = PA + 120 × (OAT − ISA Temperature)
     </div>
-  </main>
+  <footer class="tool-footer"><a href="https://github.com/JustinVerstijnen/JVWebFlightTools" target="_blank" rel="noopener noreferrer">&copy; <span data-copyright-year>2026</span> Flight Tools by Justin Verstijnen. Click here to visit GitHub project.</a></footer>
+</main>
 
   <script>
     const elev = document.getElementById('elev');
@@ -235,21 +241,7 @@
     const canvas = document.getElementById('visual');
     const ctx = canvas.getContext('2d');
 
-    const groundImage = new Image();
-    const seaImage = new Image();
-    let assetsReady = 0;
 
-    function assetLoaded() {
-      assetsReady += 1;
-      calculate();
-    }
-
-    groundImage.onload = assetLoaded;
-    seaImage.onload = assetLoaded;
-    groundImage.onerror = assetLoaded;
-    seaImage.onerror = assetLoaded;
-    groundImage.src = 'ground-surface.png';
-    seaImage.src = 'sea-texture.svg';
 
     function mToFt(m) { return m * 3.28084; }
     function ftToM(ft) { return ft / 3.28084; }
@@ -257,18 +249,8 @@
     function fmtAlt(ft) { return `${round(ft).toLocaleString('en-US')} ft`; }
     function fmtMetric(ft) { return `${round(ftToM(ft)).toLocaleString('en-US')} m`; }
 
-    function fitLabelY(target, used, minY, maxY) {
-      let y = target;
-      for (let i = 0; i < used.length; i += 1) {
-        if (Math.abs(y - used[i]) < 26) y = used[i] + 26;
-      }
-      if (y > maxY) y = maxY;
-      if (y < minY) y = minY;
-      return y;
-    }
-
     function drawTag(x, y, text, stroke) {
-      ctx.font = '600 12px Inter, system-ui, sans-serif';
+      ctx.font = '600 12px Segoe UI, sans-serif';
       const w = ctx.measureText(text).width + 18;
       const h = 24;
       const r = 11;
@@ -298,7 +280,7 @@
       ctx.clearRect(0, 0, width, height);
 
       const left = 58;
-      const right = width - 190;
+      const right = width - Math.min(190, width * 0.49);
       const top = 18;
       const bottom = height - 18;
       const plotWidth = right - left;
@@ -320,7 +302,7 @@
       ctx.fillRect(0, 0, width, height);
 
       const ticks = 5;
-      ctx.font = '12px Inter, system-ui, sans-serif';
+      ctx.font = '12px Segoe UI, sans-serif';
       ctx.fillStyle = '#74859d';
       ctx.strokeStyle = 'rgba(144, 166, 197, 0.32)';
       ctx.lineWidth = 1;
@@ -339,38 +321,15 @@
       const paY = yFor(paFt);
       const daY = yFor(daFt);
 
-      const seaBandTop = seaY - 16;
-      const seaBandHeight = 42;
-      if (seaImage.complete && seaImage.naturalWidth > 0) {
-        ctx.drawImage(seaImage, left, seaBandTop, plotWidth, seaBandHeight);
-      } else {
-        const seaGrad = ctx.createLinearGradient(0, seaBandTop, 0, seaBandTop + seaBandHeight);
-        seaGrad.addColorStop(0, '#8ed8ff');
-        seaGrad.addColorStop(1, '#0f67b7');
-        ctx.fillStyle = seaGrad;
-        ctx.fillRect(left, seaBandTop, plotWidth, seaBandHeight);
-      }
-
-      const groundHeight = Math.max(bottom - elevY, 22);
-      if (groundImage.complete && groundImage.naturalWidth > 0) {
-        const sx = 0;
-        const sy = 280;
-        const sw = groundImage.naturalWidth;
-        const sh = Math.min(190, groundImage.naturalHeight - sy);
-        ctx.drawImage(groundImage, sx, sy, sw, sh, left, elevY - 6, plotWidth, groundHeight + 12);
-      } else {
-        ctx.fillStyle = '#c2aa83';
-        ctx.fillRect(left, elevY, plotWidth, groundHeight);
-      }
-
-      ctx.fillStyle = '#737b86';
-      const runwayWidth = Math.min(160, plotWidth * 0.28);
-      ctx.fillRect(left + plotWidth * 0.34, elevY - 5, runwayWidth, 10);
-      ctx.strokeStyle = 'rgba(255,255,255,0.6)';
-      ctx.beginPath();
-      ctx.moveTo(left + plotWidth * 0.34 + 14, elevY);
-      ctx.lineTo(left + plotWidth * 0.34 + runwayWidth - 14, elevY);
-      ctx.stroke();
+      // Ground is a fixed-thickness surface at field elevation, not a stretched image.
+      // Draw scenery first so every altitude reference remains visible on top.
+      ctx.fillStyle = '#e9dfce';
+      ctx.fillRect(left, elevY, plotWidth, 10);
+      ctx.fillStyle = '#8eab79';
+      ctx.fillRect(left, elevY, plotWidth, 3);
+      ctx.fillStyle = '#667381';
+      const runwayWidth = Math.min(100, plotWidth * 0.45);
+      ctx.fillRect(left + (plotWidth - runwayWidth) / 2, elevY - 4, runwayWidth, 4);
 
       const lines = [
         { y: seaY, color: '#2563eb', dash: [7, 6], label: 'Sea level / QNH' },
@@ -382,19 +341,26 @@
       lines.forEach((line) => {
         ctx.save();
         ctx.setLineDash(line.dash);
-        ctx.strokeStyle = line.color;
-        ctx.lineWidth = line.label.includes('Elevation') ? 2.8 : 2.2;
+        ctx.strokeStyle = '#fff';
+        ctx.lineWidth = 5;
         ctx.beginPath();
         ctx.moveTo(left, line.y);
         ctx.lineTo(right, line.y);
         ctx.stroke();
+        ctx.strokeStyle = line.color;
+        ctx.lineWidth = 2;
+        ctx.stroke();
         ctx.restore();
       });
 
-      const usedLabelYs = [];
-      lines.sort((a, b) => a.y - b.y).forEach((line) => {
-        const ly = fitLabelY(line.y - 12, usedLabelYs, top + 4, bottom - 24);
-        usedLabelYs.push(ly);
+      // Resolve label collisions in both directions, including values near sea level.
+      lines.sort((a, b) => a.y - b.y);
+      const positions = lines.map(line => Math.max(top, Math.min(bottom - 24, line.y - 12)));
+      for (let i = 1; i < positions.length; i++) positions[i] = Math.max(positions[i], positions[i - 1] + 28);
+      positions[positions.length - 1] = Math.min(positions[positions.length - 1], bottom - 24);
+      for (let i = positions.length - 2; i >= 0; i--) positions[i] = Math.min(positions[i], positions[i + 1] - 28);
+      lines.forEach((line, index) => {
+        const ly = positions[index];
         ctx.save();
         ctx.strokeStyle = line.color;
         ctx.setLineDash([4, 4]);
@@ -413,7 +379,8 @@
     function calculate() {
       const elevation = parseFloat(elev.value) || 0;
       const qnhValue = parseFloat(qnh.value) || 1013.25;
-      const oat = parseFloat(temp.value) || 15;
+      const parsedTemp = parseFloat(temp.value);
+      const oat = Number.isFinite(parsedTemp) ? parsedTemp : 15;
       const elevFt = unit.value === 'm' ? mToFt(elevation) : elevation;
       const delta = 1013.25 - qnhValue;
       const paFt = elevFt + delta * 27;

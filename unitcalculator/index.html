@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <link rel="icon" href="/assets/favicon.ico" sizes="any">
-  <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png">
-  <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+  
+  
+  
+  
 
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -560,25 +560,22 @@
       }
     }
   </style>
+  <link rel="stylesheet" href="../assets/dns-theme.css">
+  <link rel="icon" type="image/png" href="../assets/flightblog-logo.png">
+  <link rel="apple-touch-icon" href="../assets/flightblog-logo.png">
+  <link rel="stylesheet" href="../assets/refinements.css">
+<link rel="stylesheet" href="../assets/branding.css">
+<script defer src="../assets/branding.js"></script>
 </head>
-<body>
+<body data-tool="unitcalculator">
   <main class="wrap">
-    <header class="hero">
+    <header class="tool-heading hero"><a class="tool-brand" href="https://flightblog.justinverstijnen.nl/" target="_blank" rel="noopener noreferrer" aria-label="Visit JV Flight Blog"><img src="../assets/flightblog-logo.png" alt="JV Flight Blog" width="52" height="52"></a>
       <div>
-        <div class="eyebrow">Flight planning utility</div>
         <h1>Aviation Unit Calculator</h1>
         <p class="subtitle">
           A modern, lightweight unit calculator for everyday flight preparation. Convert distance, speed, fuel, pressure and aviation temperature values without leaving the browser.
         </p>
-        <div class="hero-actions">
-          <a class="back-link" href="https://flighttools.justinverstijnen.nl">← Back to Flight Tools</a>
-          <a class="jump-link" href="#temperature">Temperature conversions</a>
-        </div>
       </div>
-      <aside class="hero-stat" aria-label="Calculator summary">
-        <strong id="conversionCount">0</strong>
-        <span>bidirectional aviation conversions in a clean light interface.</span>
-      </aside>
     </header>
 
     <section class="toolbar" aria-label="Calculator controls">
@@ -596,7 +593,8 @@
     <p class="footer-note">
       <strong>Note:</strong> Fuel mass conversions use the existing fixed AVGAS-style density value from the original tool: 0.72 kg/L. Always check aircraft documentation and local procedures for operational planning.
     </p>
-  </main>
+  <footer class="tool-footer"><a href="https://github.com/JustinVerstijnen/JVWebFlightTools" target="_blank" rel="noopener noreferrer">&copy; <span data-copyright-year>2026</span> Flight Tools by Justin Verstijnen. Click here to visit GitHub project.</a></footer>
+</main>
 
   <script>
     // ---- Constants from the original tool ----
@@ -682,7 +680,7 @@
     const searchInput = document.getElementById("searchInput");
     const categoryPills = document.getElementById("categoryPills");
     const emptyState = document.getElementById("emptyState");
-    const conversionCount = document.getElementById("conversionCount");
+
 
     let activeCategory = "all";
 
@@ -868,7 +866,7 @@
 
     function renderCategoryPills() {
       const total = sections.reduce((sum, section) => sum + section.conversions.length, 0);
-      conversionCount.textContent = total;
+
 
       const pills = [
         { id: "all", title: "All", count: total },
