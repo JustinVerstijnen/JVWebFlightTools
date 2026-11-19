@@ -229,11 +229,13 @@
   <link rel="stylesheet" href="../assets/dns-theme.css">
   <link rel="icon" type="image/png" href="../assets/flightblog-logo.png">
   <link rel="apple-touch-icon" href="../assets/flightblog-logo.png">
+<link rel="stylesheet" href="../assets/branding.css">
+<script defer src="../assets/branding.js"></script>
 </head>
 
 <body data-tool="topofdescentcalculator">
 <div class="wrap">
-<header>
+<header class="tool-heading "><a class="tool-brand" href="https://flightblog.justinverstijnen.nl/" target="_blank" rel="noopener noreferrer" aria-label="Visit JV Flight Blog"><img src="../assets/flightblog-logo.png" alt="JV Flight Blog" width="52" height="52"></a>
   <div>
     <h1>Top of Descent</h1>
     <p class="subtitle">
@@ -241,7 +243,7 @@
       Enter your altitudes, speeds and wind to estimate TOD distance and descent time.
     </p>
   </div>
-  <div class="pill">✈️ Wind: + tailwind / − headwind</div>
+  
 </header>
 
 <div class="card">
@@ -319,6 +321,7 @@
 
 <section class="results">
 <h2>Overview</h2>
+<div class="pill wind-note">✈️ Wind: + tailwind / − headwind</div>
 
 <div class="summary">
   <div class="tile">
@@ -351,6 +354,7 @@
 
 </section>
 </div>
+<footer class="tool-footer"><a href="https://github.com/JustinVerstijnen/JVWebFlightTools" target="_blank" rel="noopener noreferrer">&copy; <span data-copyright-year>2026</span> Flight Tools by Justin Verstijnen. Click here to visit GitHub project.</a></footer>
 </div>
 
 <script>
